@@ -16,32 +16,38 @@ if [ -z "${ELEVENLABS_API_KEY:-}" ]; then
     exit 1
 fi
 
-# Check if start and end times are provided as arguments
-if [ -n "$1" ] && [ -n "$2" ]; then
+# Check if only a link is provided (single argument) or if times are provided too
+if [ -n "$1" ] && [ -z "$2" ]; then
+    # Only link provided, process entire video
+    VOD_LINK="$1"
+    START_TIME=""
+    END_TIME=""
+    echo "Processing entire video"
+elif [ -n "$1" ] && [ -n "$2" ] && [ -n "$3" ]; then
+    # Times and link provided
     START_TIME="$1"
     END_TIME="$2"
-else
-    # Prompt user for start and end times
-    read -p "Enter start time (HH:MM:SS): " START_TIME
-    read -p "Enter end time (HH:MM:SS): " END_TIME
-fi
-
-# Check if VOD link is provided as third argument
-if [ -n "$3" ]; then
     VOD_LINK="$3"
 else
-    # Prompt user for VOD link
+    # Prompt user for input
     read -p "Enter VOD link: " VOD_LINK
+    read -p "Enter start time (HH:MM:SS) [leave blank to process entire video]: " START_TIME
+    read -p "Enter end time (HH:MM:SS) [leave blank to process entire video]: " END_TIME
 fi
 
-# Validate that times and link are not empty
-if [ -z "$START_TIME" ] || [ -z "$END_TIME" ] || [ -z "$VOD_LINK" ]; then
-    echo "Error: Start time, end time, and VOD link cannot be empty"
+# Validate that link is not empty
+if [ -z "$VOD_LINK" ]; then
+    echo "Error: VOD link cannot be empty"
     exit 1
 fi
 
-echo "Downloading section from $START_TIME to $END_TIME..."
-yt-dlp --extract-audio --audio-format mp3 --download-sections "*${START_TIME}-${END_TIME}" "$VOD_LINK" --output "clever-take-audio.mp3"
+if [ -n "$START_TIME" ] && [ -n "$END_TIME" ]; then
+    echo "Downloading section from $START_TIME to $END_TIME..."
+    yt-dlp --extract-audio --audio-format mp3 --download-sections "*${START_TIME}-${END_TIME}" "$VOD_LINK" --output "clever-take-audio.mp3"
+else
+    echo "Downloading entire VOD..."
+    yt-dlp --extract-audio --audio-format mp3 "$VOD_LINK" --output "clever-take-audio.mp3"
+fi
 echo "Download complete: clever-take-audio.mp3"
 
 echo "Transcribing audio with ElevenLabs..."
@@ -56,11 +62,27 @@ RESPONSE=$(curl --progress-bar -X POST https://api.elevenlabs.io/v1/speech-to-te
 echo "$RESPONSE" | jq -r '.text' > transcript.txt
 echo "Transcription complete. Saved to transcript.txt"
 
+# Read the transcript for the article
+TRANSCRIPT=$(cat transcript.txt)
 
+# get mr.clevers hot take summary from openrouter gpt-120b-oss
+echo "Generating article from Mr. Clever's perspective..."
+curl https://openrouter.ai/api/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -d "{
+  \"model\": \"openai/gpt-oss-120b\",
+  \"messages\": [
+    {
+      \"role\": \"user\",
+      \"content\": \"Based on the following transcript, write a compelling article from Mr. Clever's point of view on the topic he discussed. Write in his voice and style, maintaining his perspective and arguments. Make it engaging and suitable for a blog post.\\n\\nTranscript:\\n$TRANSCRIPT\"
+    }
+  ]
+}" | jq -r '.choices[0].message.content' > article.md
+echo "Article generated. Saved to article.md"
 
-echo cleaning up files
-echo Deleting clever-take-audio.mp3
-rm clever-take-audio.mp3
-echo Deleting transcript.txt
-rm transcript.txt
+echo "Cleaning up files..."
+mv clever-take-audio.mp3 last-gen/
+mv transcript.txt last-gen/
+mv article.md last-gen/
 echo "Clean up complete."
