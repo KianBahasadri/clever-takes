@@ -26,5 +26,6 @@ package-lock.json
 _sass/vendors
 assets/js/dist
 
-# secrets
+# generator
 **/.env*
+**/last-generated-article/**

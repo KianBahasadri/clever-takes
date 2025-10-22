@@ -4,7 +4,7 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-> dont take it personal son
-{: .prompt-warning }
-
-this is mr clevers hot takes on cool topics
+  Clever Takes is an opinionated blog by Mr. Clever featuring concise essays,
+  practical programming tutorials, and sharp commentary on software, technology,
+  and philosophy. Articles here are AI-generated summaries of things Mr. Clever
+  has really said. The sentences are AI-generated, the shitty opinions are all his 🔥
