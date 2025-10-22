@@ -6,14 +6,20 @@
 - type: twitter
   icon: "fa-brands fa-x-twitter"
 
-- type: email
-  icon: "fas fa-envelope"
-  noblank: true # open link in current tab
+- type: youtube
+  icon: "fab fa-youtube"
+  url: "https://www.youtube.com/@Mr-Clever"
 
-- type: rss
-  icon: "fas fa-rss"
-  noblank: true
-# Uncomment and complete the url below to enable more contact options
+- type: twitch
+  icon: "fab fa-twitch"
+  url: "https://www.twitch.tv/mrcleverlive"
+
+# - type: email
+#   icon: "fas fa-envelope"
+#   noblank: true # open link in current tab
+# - type: rss
+#   icon: "fas fa-rss"
+#   noblank: true
 #
 # - type: mastodon
 #   icon: 'fab fa-mastodon'   # icons powered by <https://fontawesome.com/>

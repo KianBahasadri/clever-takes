@@ -9,32 +9,35 @@ theme: jekyll-theme-chirpy
 lang: en
 
 # Change to your timezone › https://zones.arilyn.cc
-timezone:
+timezone: America/New_York
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Chirpy # the main title
+title: Clever Takes # the main title
 
-tagline: A text-focused Jekyll theme # it will display as the subtitle
+tagline: A Blog of Mr. Clever's hot takes on tech and philosophy # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
+  Clever Takes is an opinionated blog by Mr. Clever featuring concise essays,
+  practical programming tutorials, and sharp commentary on software, technology,
+  and philosophy. Expect clear explanations, hands-on tips, and perspectives
+  that help developers think more deeply about code, systems, and ideas.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: ""
+url: "/clever-takes"
 
 github:
-  username: github_username # change to your GitHub username
+  username: kianbahasadri # change to your GitHub username
 
 twitter:
-  username: twitter_username # change to your Twitter username
+  username: kianbahasadri # change to your Twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: your_full_name
+  name: Mr. Clever
   email: example@domain.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
@@ -98,7 +101,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar:
+avatar: /commons/LifeOfAFish_cropped.png
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
