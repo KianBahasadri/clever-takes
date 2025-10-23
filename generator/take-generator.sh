@@ -27,13 +27,9 @@ else
     yt-dlp --extract-audio --audio-format mp3 "$VOD_LINK" -o "clever-take-audio.mp3"
 fi
 
-# Transcribe with ElevenLabs
-curl -s -X POST https://api.elevenlabs.io/v1/speech-to-text \
-     -H "xi-api-key: ${ELEVENLABS_API_KEY}" \
-     -H "Content-Type: multipart/form-data" \
-     -F model_id="scribe_v1" \
-     -F timestamps_granularity="none" \
-     -F file=@"clever-take-audio.mp3" | jq -r '.text' > transcript.txt
+# Transcribe with Whisper
+./venv/bin/whisper --output_format txt clever-take-audio.mp3
+mv clever-take-audio.txt transcript.txt
 
 TRANSCRIPT=$(cat transcript.txt)
 
