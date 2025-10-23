@@ -37,15 +37,29 @@ curl -s -X POST https://api.elevenlabs.io/v1/speech-to-text \
 
 TRANSCRIPT=$(cat transcript.txt)
 
+# Content generation prompt
+CONTENT_PROMPT="Based on the following transcript, write a compelling article from Mr. Clever's point of view. Guidelines:
+1. Voice & Style: Write casually and conversationally, like talking to friends. Keep it enthusiastic but authentic - not corporate or overly polished. Use short punchy sentences mixed with explanations.
+2. Length: Aim for between 500-2000 words. Expand naturally on the key points without padding.
+3. Stay Grounded: Elaborate on ideas from the transcript, but don't invent specific facts, tools, websites, or technical details that weren't mentioned. Keep vague things vague.
+4. Formatting: Use simple Markdown (## headers, **bold**, *italics*, blockquotes). Avoid tables, complex layouts, or TL;DR sections.
+5. Authenticity: Write like Mr. Clever sharing genuine thoughts and experiences, not marketing copy. Include personality and natural enthusiasm.
+6. Structure: Start with an attention-grabbing introduction that hooks the reader. Use first-person perspective throughout.
+7. Technical: Do not repeat the title in the article body. Return strictly valid JSON matching the schema.
+
+Transcript:
+"
+
 # Generate article with OpenRouter
 STRUCTURED_RESPONSE=$(jq -n \
   --arg transcript "$TRANSCRIPT" \
+  --arg prompt "$CONTENT_PROMPT" \
   '{
     model: "openai/gpt-oss-120b",
-    max_tokens: 1000,
+    max_tokens: 2000,
     messages: [{
       role: "user",
-      content: "Based on the following transcript, write a compelling article from Mr. Clever'"'"'s point of view on the topic he discussed. Write in his voice and style, maintaining his perspective and arguments. Make it engaging and suitable for a blog post. Use Markdown formatting.\n\nTranscript:\n \($transcript)"
+      content: "\($prompt)\($transcript)"
     }],
     response_format: {
       type: "json_schema",
